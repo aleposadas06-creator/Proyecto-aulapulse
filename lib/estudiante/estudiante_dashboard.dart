@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 
-class DocenteDashboard extends StatelessWidget {
-  const DocenteDashboard({super.key});
+class EstudianteDashboard extends StatelessWidget {
+  const EstudianteDashboard({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Text("Dashboard del Docente"),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Panel del Estudiante"),
+      ),
+      body: const Center(
+        child: Text("Bienvenido Estudiante"),
       ),
     );
   }

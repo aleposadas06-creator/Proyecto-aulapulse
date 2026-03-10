@@ -5,9 +5,12 @@ class DocenteDashboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Text("Dashboard del Docente"),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Panel del Docente"),
+      ),
+      body: const Center(
+        child: Text("Bienvenido Docente"),
       ),
     );
   }
