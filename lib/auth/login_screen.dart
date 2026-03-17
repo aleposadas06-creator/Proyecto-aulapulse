@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/data_service.dart';
 import '../models/usuario.dart';
-import '../docente/docente_dashboard.dart';
+import '../docente/teacher_dashboard_page.dart';
 import '../estudiante/estudiante_dashboard.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -46,22 +46,26 @@ class LoginScreen extends StatelessWidget {
             ElevatedButton(
               onPressed: () async {
 
-                // cargar usuarios guardados
+                // 🔹 IMPORTANTE: cargar usuarios desde almacenamiento
                 await dataService.cargarUsuarios();
 
                 Usuario? usuario = dataService.login(
-                  correoController.text,
-                  passwordController.text,
+                  correoController.text.trim(), // 👈 evita errores por espacios
+                  passwordController.text.trim(),
                 );
 
                 if (usuario != null) {
 
+                  // 🔹 Guardar usuario actual
+                  dataService.usuarioActual = usuario;
+
+                  // 🔹 Redirección según rol
                   if (usuario.rol == "docente") {
 
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const DocenteDashboard(),
+                        builder: (context) => const TeacherDashboardPage(),
                       ),
                     );
 

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'widgets/student_participation_tile.dart';
+import '../services/data_service.dart';
+import '../models/participacion.dart';
 
 class ParticipacionPage extends StatefulWidget {
   const ParticipacionPage({super.key});
@@ -10,30 +12,23 @@ class ParticipacionPage extends StatefulWidget {
 
 class _ParticipacionPageState extends State<ParticipacionPage> {
 
-  final List<String> students = [
-    "Ana López",
-    "Carlos Pérez",
-    "María Rodríguez",
-    "Luis García",
-    "Daniel Hernández",
-    "Sofía Torres",
-    "José Martínez",
-    "Valeria Flores",
-    "Pedro Sánchez",
-    "Camila Reyes",
-    "Andrés Castro",
-    "Laura Mendoza",
-    "Miguel Ramos",
-    "Daniela Cruz",
-    "Fernando Ortiz",
-    "Paola Vargas",
-    "Ricardo Díaz",
-    "Alejandro Morales",
-    "Gabriela Silva",
-    "Jorge Navarro",
-  ];
+  final DataService dataService = DataService();
 
-  List<int> participation = List.generate(20, (index) => 0);
+  List<String> students = [];
+  List<int> participation = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Obtener estudiantes desde DataService
+    students = dataService.estudiantes
+        .map((e) => e.nombre)
+        .toList();
+
+    // Inicializar participaciones
+    participation = List.generate(students.length, (index) => 0);
+  }
 
   String getFechaActual() {
     final now = DateTime.now();
@@ -48,6 +43,29 @@ class _ParticipacionPageState extends State<ParticipacionPage> {
 
   int getTotalParticipaciones() {
     return participation.fold(0, (a, b) => a + b);
+  }
+
+  void guardarParticipaciones() {
+    for (int i = 0; i < dataService.estudiantes.length; i++) {
+
+      final estudiante = dataService.estudiantes[i];
+
+      final participacionObj = Participacion(
+      id: DateTime.now().millisecondsSinceEpoch.toString() + i.toString(),
+      estudianteId: estudiante.id,
+      tipoActividad: "Clase",
+      puntos: participation[i],
+      fecha: DateTime.now(),
+    );
+
+      dataService.participaciones.add(participacionObj);
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text("Participaciones guardadas"),
+      ),
+    );
   }
 
   @override
@@ -139,7 +157,6 @@ class _ParticipacionPageState extends State<ParticipacionPage> {
                   points: participation[index],
 
                   onAdd: () {
-
                     setState(() {
                       participation[index]++;
                     });
@@ -167,6 +184,28 @@ class _ParticipacionPageState extends State<ParticipacionPage> {
               },
             ),
           ),
+
+          /// BOTÓN GUARDAR
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: guardarParticipaciones,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF1F7A4C),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
+                child: const Text(
+                  "Guardar Participaciones",
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          )
 
         ],
       ),

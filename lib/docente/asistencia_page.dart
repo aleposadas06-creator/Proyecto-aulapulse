@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'widgets/student_checkbox_tile.dart';
+import '../services/data_service.dart';
+import '../models/asistencia.dart';
 
 class AsistenciaPage extends StatefulWidget {
   const AsistenciaPage({super.key});
@@ -10,32 +12,23 @@ class AsistenciaPage extends StatefulWidget {
 
 class _AsistenciaPageState extends State<AsistenciaPage> {
 
+  final DataService dataService = DataService();
+
   bool asistenciaRegistrada = false;
 
-  final List<String> students = [
-    "Ana López",
-    "Carlos Pérez",
-    "María Rodríguez",
-    "Luis García",
-    "Daniel Hernández",
-    "Sofía Torres",
-    "José Martínez",
-    "Valeria Flores",
-    "Pedro Sánchez",
-    "Camila Reyes",
-    "Andrés Castro",
-    "Laura Mendoza",
-    "Miguel Ramos",
-    "Daniela Cruz",
-    "Fernando Ortiz",
-    "Paola Vargas",
-    "Ricardo Díaz",
-    "Alejandro Morales",
-    "Gabriela Silva",
-    "Jorge Navarro",
-  ];
+  List<String> students = [];
+  List<bool> attendance = [];
 
-  List<bool> attendance = List.generate(20, (index) => false);
+  @override
+  void initState() {
+    super.initState();
+
+    // 🔥 OBTENER ESTUDIANTES CORRECTAMENTE
+    final lista = dataService.obtenerEstudiantesPorCurso("curso1");
+
+    students = lista.map((e) => e.nombre).toList();
+    attendance = List.generate(students.length, (index) => false);
+  }
 
   Future<bool> _onWillPop() async {
 
@@ -67,6 +60,23 @@ class _AsistenciaPageState extends State<AsistenciaPage> {
   void registerAttendance() {
 
     int presentes = attendance.where((a) => a).length;
+
+    // 🔥 OBTENER LISTA REAL
+    final lista = dataService.obtenerEstudiantesPorCurso("curso1");
+
+    for (int i = 0; i < lista.length; i++) {
+
+      final estudiante = lista[i];
+
+      final asistencia = Asistencia(
+        id: DateTime.now().millisecondsSinceEpoch.toString() + i.toString(),
+        estudianteId: estudiante.id,
+        fecha: DateTime.now(),
+        presente: attendance[i],
+      );
+
+      dataService.agregarAsistencia(asistencia);
+    }
 
     setState(() {
       asistenciaRegistrada = true;
@@ -210,7 +220,7 @@ class _AsistenciaPageState extends State<AsistenciaPage> {
                     style: const TextStyle(
                       fontSize: 16,
                       color: Colors.white,
-                      ),
+                    ),
                   ),
                 ),
               ),

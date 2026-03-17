@@ -1,12 +1,21 @@
 import 'package:flutter/material.dart';
 import 'auth/login_screen.dart';
 import 'services/data_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  DataService dataService = DataService();
+  final dataService = DataService();
+
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.clear();
+
   await dataService.inicializarUsuarios();
+  await dataService.inicializarEstudiantes();
+
+  await dataService.cargarAsistencias();
+  await dataService.cargarParticipaciones();
 
   runApp(const AulaPulseApp());
 }

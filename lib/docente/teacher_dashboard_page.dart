@@ -4,6 +4,7 @@ import 'asistencia_page.dart';
 import 'participacion_page.dart';
 import 'reportes_page.dart';
 import 'dashboard_page.dart';
+import '../auth/login_screen.dart';
 
 class TeacherDashboardPage extends StatefulWidget {
   const TeacherDashboardPage({super.key});
@@ -23,22 +24,35 @@ class _TeacherDashboardPageState extends State<TeacherDashboardPage> {
 
     return Scaffold(
 
-      appBar: AppBar(
-        title: const Text(
-          "Panel del Docente",
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 22,
-            letterSpacing: 0.5,
-          ),
-        ),
-        centerTitle: true,
-        backgroundColor: const Color(0xFF1A2E6C),
-        iconTheme: const IconThemeData(
-          color: Colors.white,
-        ),
-      ),
+     appBar: AppBar(
+  title: const Text(
+    "Panel del Docente",
+    style: TextStyle(
+      color: Colors.white,
+      fontWeight: FontWeight.bold,
+      fontSize: 22,
+      letterSpacing: 0.5,
+    ),
+  ),
+  centerTitle: true,
+  backgroundColor: const Color(0xFF1A2E6C),
+  iconTheme: const IconThemeData(
+    color: Colors.white,
+  ),
+
+  actions: [
+    IconButton(
+      icon: const Icon(Icons.logout),
+      onPressed: () {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => LoginScreen()),
+          (route) => false,
+        );
+      },
+    ),
+  ],
+),
 
       backgroundColor: isDarkMode ? Colors.black : const Color(0xFFF2F2F2),
 
